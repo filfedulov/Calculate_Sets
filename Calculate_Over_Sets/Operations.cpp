@@ -22,7 +22,7 @@ void Operations::create_sets()
 			std::cout << "Введите мощность множества А: ";
 			getline(std::cin, power);
 			power_ = stoi(power);
-			if (power_ >= 0 && power_ <= 20)
+			if (power_ > 0 && power_ <= 9)
 			{
 				a.resize(power_);
 				std::cout << "\nЗаполните элементами множество А" << std::endl;
@@ -33,15 +33,15 @@ void Operations::create_sets()
 						std::cout << i + 1 << "-й элемент: ";
 						std::cin >> x;
 						x_ = stoi(x);
-						if (x_ >= 0 && x_ <= 20)
+						if (x_ >= 0 && x_ <= 9)
 						{
 							a[i] = x_;
 						}
 						else if (x_ < -2147483648 || x_ > 2147483647)
-							throw std::exception("Превышен диапазон значений, повторите ввод");
+							throw std::exception("\nПревышен диапазон значений, повторите ввод\n");
 						else
 						{
-							std::cout << "\nПревышенно предусмотренное значение, либо преуменьшенно\nповторите ввод...";
+							std::cout << "\nПревышенно предусмотренное значение, либо преуменьшенно\nповторите ввод...\n";
 							i -= 1;
 						}
 					}
@@ -79,16 +79,18 @@ void Operations::create_sets()
 	can = false;
 	power_ = 0,
 		x_ = 0;
-	std::cin.ignore();
+	std::cin.ignore(1, '\n');
 	
 	do
 	{
 		try
 		{
-			std::cout << "Введите мощность множества B: ";
+			std::cout << "\nВведите мощность множества B: ";
 			getline(std::cin, power);
 			power_ = stoi(power);
-			if (power_ >= 0 && power_ <= 20)
+			if (power_ == 0)
+				break;
+			if (power_ >= 0 && power_ <= 9)
 			{
 				b.resize(power_);
 				std::cout << "\nЗаполните элементами множество B" << std::endl;
@@ -99,7 +101,7 @@ void Operations::create_sets()
 						std::cout << i + 1 << "-й элемент: ";
 						std::cin >> x;
 						x_ = stoi(x);
-						if (x_ >= 0 && x_ <= 20)
+						if (x_ >= 0 && x_ <= 9)
 						{
 							b[i] = x_;
 						}
@@ -107,7 +109,7 @@ void Operations::create_sets()
 							throw std::exception("Превышен диапазон значений, повторите ввод");
 						else
 						{
-							std::cout << "\nПревышенно предусмотренное значение, либо преуменьшенно\nповторите ввод...";
+							std::cout << "\nПревышенно предусмотренное значение, либо преуменьшенно\nповторите ввод...\n";
 							i -= 1;
 						}
 					}
@@ -139,14 +141,24 @@ void Operations::create_sets()
 		}
 
 	} while (!can);
-	
+	std::cin.ignore(1,'\n');
+
 	return;
 }
 
 void Operations::cout_sets()
 {
-	if (a.size() != 0 && b.size() != 0)
+	if (a.size() != 0)
 	{
+		std::cout << "\nУниверсальное множество = { ";
+		for (size_t i = 0; i < universal_set.size(); i++)
+		{
+			if (i == universal_set.size() - 1)
+				std::cout << universal_set[i] << " }\n";
+			else
+				std::cout << universal_set[i] << ", ";
+		}
+
 		std::cout << "\nМножество А = { ";
 		for (size_t i = 0; i < a.size(); i++)
 		{
@@ -155,7 +167,7 @@ void Operations::cout_sets()
 			else
 				std::cout << a[i] << ", ";
 		}
-		
+
 		std::cout << "\nМножество B = { ";
 		for (size_t i = 0; i < b.size(); i++)
 		{
@@ -165,20 +177,17 @@ void Operations::cout_sets()
 				std::cout << b[i] << ", ";
 		}
 	}
+	else
+		std::cout << "\nМножества пусты!\n";
 
 	return;
 }
 
 void Operations::negation()
 {
-	for_a = a;
-	for_b = b;
 	std::string choice = "";
-	int choice_ = 0,
-		for_result = 0;
+	int choice_ = 0;
 	bool can = false;
-	std::cin.ignore();
-	result = universal_set;
 	int del = 0;
 
 	do
@@ -190,55 +199,61 @@ void Operations::negation()
 			choice_ = stoi(choice);
 			if (choice_ == 1)
 			{
-				for (size_t i = 0; i < for_a.size(); i++)
+				result = universal_set;
+				for (size_t i = 0; i < a.size(); i++)
 				{
 					for (size_t j = 0; j < universal_set.size(); j++)
 					{
-						if (for_a[i] == universal_set[j])
+						if (a[i] == universal_set[j])
 						{
-							del = for_a[i];
-							result.erase(std::remove(result.begin(), result.end(), del), result.end());
-							break;
-						}
-					}
-				}
-				std::cout << char(172) << "A = { ";
-				for (size_t i = 0; i < result.size(); i++)
-				{
-					if (i == result.size() - 1)
-						std::cout << result[i] << " }";
-					else
-						std::cout << result[i] << ", ";
-				}
-			}
-			else if (choice_ == 2)
-			{
-				for (size_t i = 0; i < for_b.size(); i++)
-				{
-					for (size_t j = 0; j < universal_set.size(); j++)
-					{
-						if (for_b[i] == universal_set[j])
-						{
-							del = for_b[i];
+							del = a[i];
 							result.erase(std::remove(result.begin(), result.end(), del), result.end());
 							break;
 						}
 					}
 				}
 				if (result.size() == 0)
-					std::cout << char(172) << "A  = 0.\n";
+					std::cout << "\n" << char(172) << "A = 0.\n";
 				else
 				{
-					std::cout << char(172) << "B = { ";
+					std::cout << "\n" << char(172) << "A = { ";
 					for (size_t i = 0; i < result.size(); i++)
 					{
 						if (i == result.size() - 1)
-							std::cout << result[i] << " }";
+							std::cout << result[i] << " }\n";
 						else
 							std::cout << result[i] << ", ";
 					}
 				}
-				result.resize(0);
+			}
+			else if (choice_ == 2)
+			{
+				result = universal_set;
+				for (size_t i = 0; i < b.size(); i++)
+				{
+					for (size_t j = 0; j < universal_set.size(); j++)
+					{
+						if (b[i] == universal_set[j])
+						{
+							del = b[i];
+							result.erase(std::remove(result.begin(), result.end(), del), result.end());
+							break;
+						}
+					}
+				}
+				if (result.size() == 0)
+					std::cout << "\n" << char(172) << "B = 0.\n";
+				else
+				{
+					std::cout << "\n" << char(172) << "B = { ";
+					for (size_t i = 0; i < result.size(); i++)
+					{
+						if (i == result.size() - 1)
+							std::cout << result[i] << " }\n";
+						else
+							std::cout << result[i] << ", ";
+					}
+				}
 			}
 			else if (choice_ == 3)
 			{
@@ -262,18 +277,16 @@ void Operations::negation()
 	} while (!can);
 
 
+	result.resize(0);
+
 	return;
 }
 
 void Operations::intersection_sets()
 {
-	result.resize(0);
 	std::string choice = "";
-	int choice_ = 0,
-		for_result = 0,
-		del = 0;
+	int choice_ = 0;
 	bool can = false;
-	std::cin.ignore();
 	
 	do
 	{
@@ -296,14 +309,14 @@ void Operations::intersection_sets()
 					}
 				}
 				if (result.size() == 0)
-					std::cout << "A перечечение B = 0.\n";
+					std::cout << "\nA перечечение B = 0.\n";
 				else
 				{
-					std::cout << "A перечечение B = { ";
+					std::cout << "\nA перечечение B = { ";
 					for (size_t i = 0; i < result.size(); i++)
 					{
 						if (i == result.size() - 1)
-							std::cout << result[i] << " }";
+							std::cout << result[i] << " }\n";
 						else
 							std::cout << result[i] << ", ";
 					}
@@ -312,7 +325,7 @@ void Operations::intersection_sets()
 			else if (choice_ == 2)
 				break;
 			else if (choice_ < -2147483648 || choice_ > 2147483647)
-				throw std::exception("Превышен диапазон значений, повторите ввод");
+				throw std::exception("\nПревышен диапазон значений, повторите ввод\n");
 			else
 				std::cout << "\nВведенное значение больше предусмотренного, либо меньше или не число\nповторите ввод...\n";
 		}
@@ -327,24 +340,100 @@ void Operations::intersection_sets()
 
 	} while (!can);
 
+	result.resize(0);
+
 	return;
 }
 
 void Operations::uinion_sets()
 {
-	result.resize(0);
+	if (a.size() != 0)
+	{
+		std::string choice = "";
+		int choice_ = 0;
+		bool can = false;
+
+		do
+		{
+			try
+			{
+				std::cout << "\nВыберите индекс действия\n1.) A объединение B;\n2.) Выход.\n";
+				getline(std::cin, choice);
+				choice_ = stoi(choice);
+				if (choice_ == 1)
+				{
+					for (size_t i = 0; i < a.size(); i++)
+					{
+						result.push_back(a[i]);
+					}
+					for (size_t i = 0; i < b.size(); i++)
+					{
+						result.push_back(b[i]);
+					}
+					for (size_t i = 0; i < result.size() - 1; i++)
+					{
+						for (size_t j = i + 1; j < result.size(); j++)
+						{
+							if (result[i] == result[j])
+							{
+								result.erase(result.begin() + j);
+							}
+						}
+					}
+					if (result.size() == 0)
+						std::cout << "\nA объединение B = 0.\n";
+					else
+					{
+						std::cout << "\nA объединение B = { ";
+						for (size_t i = 0; i < result.size(); i++)
+						{
+							if (i == result.size() - 1)
+								std::cout << result[i] << " }\n";
+							else
+								std::cout << result[i] << ", ";
+						}
+					}
+				}
+				else if (choice_ == 2)
+					break;
+				else if (choice_ < -2147483648 || choice_ > 2147483647)
+					throw std::exception("\nПревышен диапазон значений, повторите ввод\n");
+				else
+					std::cout << "\nВведенное значение больше предусмотренного, либо меньше или не число\nповторите ввод...\n";
+			}
+			catch (std::invalid_argument e)
+			{
+				std::cout << "\nНекоректный ввод, повторите\n";
+			}
+			catch (std::exception e)
+			{
+				std::cout << e.what() << std::endl;
+			}
+
+		} while (!can);
+
+		result.resize(0);
+	}
+	else
+		std::cout << "\nA объединение B = 0.\n";
+	
+
+	return;
+}
+
+void Operations::difference_sets()
+{
 	std::string choice = "";
 	int choice_ = 0,
 		for_result = 0,
 		del = 0;
 	bool can = false;
-	std::cin.ignore();
-
+	
 	do
 	{
 		try
 		{
-			std::cout << "\nВыберите индекс действия\n1.) A пересечение B;\n2.) Выход.\n";
+			std::cout << "\nВыберите разность\n1.) A "<<char(92)<<" B;\n2.) B " << char(92) << " A;\n3.) Выход.\n";
 			getline(std::cin, choice);
 			choice_ = stoi(choice);
 			if (choice_ == 1)
@@ -353,108 +442,63 @@ void Operations::uinion_sets()
 				{
 					result.push_back(a[i]);
 				}
-				for (size_t i = 0; i < b.size(); i++)
+				for (size_t i = 0; i < a.size(); i++)
 				{
-					result.push_back(b[i]);
+					for (size_t j = 0; j < b.size(); j++)
+					{
+						if (a[i] == b[j])
+						{
+							del = a[i];
+							result.erase(std::remove(result.begin(), result.end(), del), result.end());
+							break;
+						}
+					}
 				}
 				if (result.size() == 0)
-					std::cout << "A объединение B = 0.\n";
+					std::cout << "\nA " << char(92) << " B = 0 \n";
 				else
 				{
-					std::cout << "A объединение B = { ";
+					std::cout << "\nA " << char(92) << " B = { ";
 					for (size_t i = 0; i < result.size(); i++)
 					{
 						if (i == result.size() - 1)
-							std::cout << result[i] << " }";
+							std::cout << result[i] << " }\n";
 						else
 							std::cout << result[i] << ", ";
 					}
 				}
 			}
 			else if (choice_ == 2)
-				break;
-			else if (choice_ < -2147483648 || choice_ > 2147483647)
-				throw std::exception("Превышен диапазон значений, повторите ввод");
-			else
-				std::cout << "\nВведенное значение больше предусмотренного, либо меньше или не число\nповторите ввод...\n";
-		}
-		catch (std::invalid_argument e)
-		{
-			std::cout << "\nНекоректный ввод, повторите\n";
-		}
-		catch (std::exception e)
-		{
-			std::cout << e.what() << std::endl;
-		}
-
-	} while (!can);
-
-	return;
-
-}
-
-void Operations::difference_sets()
-{
-	for_a = a;
-	for_b = b;
-	std::string choice = "";
-	int choice_ = 0,
-		for_result = 0,
-		del = 0;
-	bool can = false;
-	std::cin.ignore();
-
-	do
-	{
-		try
-		{
-			std::cout << "\nВыберите зазность\n1.) A "<<char(92)<<" B;\n2.) B " << char(92) << " A;\n3.) Выход.\n";
-			getline(std::cin, choice);
-			choice_ = stoi(choice);
-			if (choice_ == 1)
 			{
-				for (size_t i = 0; i < for_a.size(); i++)
+				result.resize(0);
+				for (size_t i = 0; i < b.size(); i++)
 				{
-					for (size_t j = 0; j < for_b.size(); j++)
+					result.push_back(b[i]);
+				}
+				for (size_t i = 0; i < b.size(); i++)
+				{
+					for (size_t j = 0; j < a.size(); j++)
 					{
-						if (for_a[i] == for_b[j])
+						if (b[i] == a[j])
 						{
-							del = for_a[i];
-							for_a.erase(std::remove(for_a.begin(), for_a.end(), del), for_a.end());
+							del = b[i];
+							result.erase(std::remove(result.begin(), result.end(), del), result.end());
 							break;
 						}
 					}
 				}
-				std::cout << "A " << char(92) << " B = { ";
-				for (size_t i = 0; i < for_a.size(); i++)
+				if (result.size() == 0)
+					std::cout << "\nB " << char(92) << " A = 0 \n";
+				else
 				{
-					if (i == for_a.size() - 1)
-						std::cout << for_a[i] << " }";
-					else
-						std::cout << for_a[i] << ", ";
-				}
-			}
-			else if (choice_ == 2)
-			{
-				for (size_t i = 0; i < for_b.size(); i++)
-				{
-					for (size_t j = 0; j < for_a.size(); j++)
+					std::cout << "\nB " << char(92) << " A = { ";
+					for (size_t i = 0; i < result.size(); i++)
 					{
-						if (for_b[i] == for_a[j])
-						{
-							del = for_b[i];
-							for_b.erase(std::remove(for_b.begin(), for_b.end(), del), for_b.end());
-							break;
-						}
+						if (i == result.size() - 1)
+							std::cout << result[i] << " }\n";
+						else
+							std::cout << result[i] << ", ";
 					}
-				}
-				std::cout << "B " << char(92) << " A = { ";
-				for (size_t i = 0; i < for_b.size(); i++)
-				{
-					if (i == for_b.size() - 1)
-						std::cout << for_b[i] << " }";
-					else
-						std::cout << for_b[i] << ", ";
 				}
 			}
 			else if (choice_ == 3)
@@ -475,26 +519,24 @@ void Operations::difference_sets()
 
 	} while (!can);
 
+	result.resize(0);
+
 	return;
 
 }
 
 void Operations::simetricDifference_sets()
 {
-	result.resize(0);
 	std::string choice = "";
-	int choice_ = 0,
-		for_result = 0,
-		del = 0;
+	int choice_ = 0;
 	bool can = false,
 		repeat = false;
-	std::cin.ignore();
 
 	do
 	{
 		try
 		{
-			std::cout << "\nВыберите зазность\n1.) A  С.Разность  B;\n2.) Выход.\n";
+			std::cout << "\nВыберите индекс действия\n1.) A  Симметрическая Разность  B;\n2.) Выход.\n";
 			getline(std::cin, choice);
 			choice_ = stoi(choice);
 			if (choice_ == 1)
@@ -532,14 +574,14 @@ void Operations::simetricDifference_sets()
 					}
 				}
 				if (result.size() == 0)
-					std::cout << "A С.Разность B = 0.\n";
+					std::cout << "\nA Симметрическая Разность B = 0.\n";
 				else
 				{
-					std::cout << "A С.Разность B = { ";
+					std::cout << "\nA Симметрическая Разность B = { ";
 					for (size_t i = 0; i < result.size(); i++)
 					{
 						if (i == result.size() - 1)
-							std::cout << result[i] << " }";
+							std::cout << result[i] << " }\n";
 						else
 							std::cout << result[i] << ", ";
 					}
@@ -563,8 +605,9 @@ void Operations::simetricDifference_sets()
 
 	} while (!can);
 
-	return;
+	result.resize(0);
 
+	return;
 }
 
 Operations::~Operations(){}

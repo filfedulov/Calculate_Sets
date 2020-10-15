@@ -21,8 +21,6 @@ private:
 	std::vector<int> universal_set,
 		a,
 		b,
-		result,
-		for_a,
-		for_b;
+		result;
 };
 
